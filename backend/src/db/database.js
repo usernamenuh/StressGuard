@@ -16,37 +16,65 @@ async function initializeDatabase() {
 
   database = await open({
     filename: env.dbPath,
-    driver: sqlite3.Database
+    driver: sqlite3.Database,
   });
 
   await database.exec(`
-    CREATE TABLE IF NOT EXISTS predictions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      sleep_date TEXT NOT NULL,
-      sleep_duration_hours REAL NOT NULL,
-      sleep_quality INTEGER NOT NULL,
-      bedtime_consistency INTEGER NOT NULL,
-      awakenings_count INTEGER NOT NULL,
-      daytime_fatigue INTEGER NOT NULL,
-      screen_time_before_bed_minutes INTEGER NOT NULL,
-      caffeine_intake_cups INTEGER NOT NULL,
-      sleep_latency_minutes INTEGER NOT NULL,
-      notes TEXT,
-      stress_score INTEGER NOT NULL,
-      stress_level TEXT NOT NULL,
-      confidence REAL NOT NULL,
-      recommendations TEXT NOT NULL,
-      model_provider TEXT NOT NULL,
-      model_version TEXT NOT NULL,
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT TEXT,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
 
-    CREATE INDEX IF NOT EXISTS idx_predictions_created_at
-      ON predictions(created_at DESC);
+  CREATE TABLE IF NOT EXISTS predictions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    CREATE INDEX IF NOT EXISTS idx_predictions_stress_level
-      ON predictions(stress_level);
-  `);
+    user_id INTEGER NOT NULL,
+
+    sleep_date TEXT NOT NULL,
+
+    age INTEGER NOT NULL,
+
+    gender TEXT NOT NULL,
+
+    sleep_hours REAL NOT NULL,
+
+    sleep_quality_score REAL NOT NULL,
+
+    daily_screen_time_hours REAL NOT NULL,
+
+    phone_usage_before_sleep_minutes INTEGER NOT NULL,
+
+    notes TEXT,
+
+    stress_score INTEGER NOT NULL,
+
+    stress_level TEXT NOT NULL,
+
+    confidence REAL NOT NULL,
+
+    recommendations TEXT NOT NULL,
+
+    model_provider TEXT NOT NULL,
+
+    model_version TEXT NOT NULL,
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_predictions_user_id
+    ON predictions(user_id);
+
+  CREATE INDEX IF NOT EXISTS idx_predictions_created_at
+    ON predictions(created_at DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_predictions_stress_level
+    ON predictions(stress_level);
+`);
 
   return database;
 }
@@ -62,6 +90,7 @@ async function getDatabase() {
 async function closeDatabase() {
   if (database) {
     await database.close();
+
     database = null;
   }
 }
@@ -69,5 +98,5 @@ async function closeDatabase() {
 module.exports = {
   initializeDatabase,
   getDatabase,
-  closeDatabase
+  closeDatabase,
 };

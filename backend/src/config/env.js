@@ -8,12 +8,22 @@ const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   apiPrefix: process.env.API_PREFIX || "/api/v1",
   frontendOrigin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+
   dbPath: path.resolve(
     process.cwd(),
     process.env.DB_PATH || "./data/stress-detection.sqlite"
   ),
+
   modelProvider: process.env.MODEL_PROVIDER || "heuristic",
-  modelVersion: process.env.MODEL_VERSION || "heuristic-v1"
+  modelVersion: process.env.MODEL_VERSION || "heuristic-v1",
+  aiApiUrl: process.env.AI_API_URL || "http://127.0.0.1:8000/predict",
+
+  jwtSecret: process.env.JWT_SECRET || "stressguard-secret-key",
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+
+  firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+  firebaseClientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  firebasePrivateKey: process.env.FIREBASE_PRIVATE_KEY
 };
 
 module.exports = { env };

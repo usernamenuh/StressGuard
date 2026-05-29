@@ -5,36 +5,47 @@ import {
   getFormMeta,
   getPredictionHistory,
   healthCheck,
-  normalizeApiError
+  normalizeApiError,
 } from "./lib/api";
 import {
   createInitialFormValues,
   fallbackFormMeta,
   mergeFormMeta,
   normalizePayload,
-  validateForm
+  validateForm,
 } from "./lib/form";
 import { DashboardSummary } from "./components/DashboardSummary";
 import { HeroSection } from "./components/HeroSection";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { PredictionResult } from "./components/PredictionResult";
 import { SleepForm } from "./components/SleepForm";
-
+import { LandingPage } from "./components/LandingPage";
+import { AppNavbar } from "./components/AppNavbar";
+import { LoginPage } from "./pages/LoginPage";
 const defaultHistoryMeta = {
   page: 1,
   limit: 6,
   total: 0,
-  totalPages: 1
+  totalPages: 1,
 };
 
+const googleRedirectPendingKey = "stressguard-google-redirect-pending";
+
 function App() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showApp, setShowApp] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const token = localStorage.getItem("token");
+    return token ? { authenticated: true } : null;
+  });
   const [health, setHealth] = useState({
     online: false,
-    message: "Memeriksa koneksi backend..."
+    message: "Memeriksa koneksi backend...",
   });
   const [formMeta, setFormMeta] = useState(fallbackFormMeta);
   const [formValues, setFormValues] = useState(() =>
-    createInitialFormValues(fallbackFormMeta.fields)
+    createInitialFormValues(fallbackFormMeta.fields),
   );
   const [formErrors, setFormErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
@@ -59,7 +70,7 @@ function App() {
         loadHealth(),
         loadFormMetadata(),
         loadDashboard(),
-        loadHistory("")
+        loadHistory(""),
       ]);
     };
 
@@ -71,13 +82,13 @@ function App() {
       const response = await healthCheck();
       setHealth({
         online: true,
-        message: response.message || "Backend siap menerima request."
+        message: response.message || "Backend siap menerima request.",
       });
     } catch (error) {
       setHealth({
         online: false,
         message:
-          "Backend belum terhubung. Jalankan server Express untuk mengaktifkan analisis real-time."
+          "Backend belum terhubung. Jalankan server Express untuk mengaktifkan analisis real-time.",
       });
     }
   }
@@ -90,7 +101,7 @@ function App() {
       setFormValues(createInitialFormValues(nextMeta.fields));
     } catch (error) {
       setSubmitError(
-        "Metadata form dari backend belum bisa dimuat. Frontend memakai fallback agar tetap bisa dipakai."
+        "Metadata form dari backend belum bisa dimuat. Frontend memakai fallback agar tetap bisa dipakai.",
       );
     }
   }
@@ -103,11 +114,16 @@ function App() {
       const response = await getDashboardSummary();
       setDashboard(response.data);
       if (response.data?.latestPrediction) {
-        setLatestPrediction((current) => current || response.data.latestPrediction);
+        setLatestPrediction(
+          (current) => current || response.data.latestPrediction,
+        );
       }
     } catch (error) {
       setDashboardError(
-        normalizeApiError(error, "Dashboard belum bisa memuat data dari backend.")
+        normalizeApiError(
+          error,
+          "Dashboard belum bisa memuat data dari backend.",
+        ),
       );
     } finally {
       setDashboardLoading(false);
@@ -122,13 +138,13 @@ function App() {
       const response = await getPredictionHistory({
         page: 1,
         limit: 6,
-        ...(filterValue ? { stressLevel: filterValue } : {})
+        ...(filterValue ? { stressLevel: filterValue } : {}),
       });
       setHistoryEntries(response.data || []);
       setHistoryMeta(response.meta || defaultHistoryMeta);
     } catch (error) {
       setHistoryError(
-        normalizeApiError(error, "Riwayat prediksi belum bisa dimuat.")
+        normalizeApiError(error, "Riwayat prediksi belum bisa dimuat."),
       );
     } finally {
       setHistoryPending(false);
@@ -146,7 +162,7 @@ function App() {
 
     setFormValues((current) => ({
       ...current,
-      [name]: nextValue
+      [name]: nextValue,
     }));
 
     setFormErrors((current) => {
@@ -184,12 +200,18 @@ function App() {
       const prediction = response.data;
 
       setLatestPrediction(prediction);
-      setSuccessMessage("Analisis berhasil. Dashboard dan riwayat sedang diperbarui.");
+      setSuccessMessage(
+        "Analisis berhasil. Dashboard dan riwayat sedang diperbarui.",
+      );
 
-      await Promise.all([loadDashboard(), loadHistory(historyFilter), loadHealth()]);
+      await Promise.all([
+        loadDashboard(),
+        loadHistory(historyFilter),
+        loadHealth(),
+      ]);
     } catch (error) {
       setSubmitError(
-        normalizeApiError(error, "Analisis gagal dikirim ke backend.")
+        normalizeApiError(error, "Analisis gagal dikirim ke backend."),
       );
     } finally {
       setIsSubmitting(false);
@@ -204,74 +226,130 @@ function App() {
     loadHistory(nextFilter);
   }
 
-  function scrollToAssessment() {
-    document.getElementById("assessment")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+  function handleStartAssessment() {
+    if (!currentUser) {
+      setShowLogin(true);
+      return;
+    }
+
+    setShowApp(true);
+
+    setTimeout(() => {
+      document.getElementById("assessment")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
   }
 
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setCurrentUser(null);
+    setShowApp(false);
+    setShowLogin(false);
+    window.history.replaceState(null, "", window.location.pathname);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function scrollToAssessment() {
+  if (!currentUser) {
+    setShowLogin(true);
+    return;
+  }
+
+  setShowApp(true);
+
+  setTimeout(() => {
+    document.getElementById("assessment")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 100);
+}
+
   return (
-    <div className="app-shell" id="top">
-      <div className="ambient-line ambient-line-one" aria-hidden="true" />
-      <div className="ambient-line ambient-line-two" aria-hidden="true" />
-      <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
-      <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+    <div className={`app-shell${showLogin ? " login-shell" : ""}`} id="top">
+      {!showLogin && (
+        <>
+          <div className="ambient-line ambient-line-one" aria-hidden="true" />
+          <div className="ambient-line ambient-line-two" aria-hidden="true" />
+          <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
+          <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+        </>
+      )}
       <div className="page-shell">
-        <header className="topbar">
-          <a href="#top" className="brand-mark">
-            <strong>mindcare</strong>
-            <small>sleep and stress companion</small>
-          </a>
-
-          <nav className="topnav">
-            <a href="#assessment">Asesmen</a>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#history">Journal</a>
-          </nav>
-
-          <div className={`status-chip ${health.online ? "online" : "offline"}`}>
-            <span className="status-dot" />
-            {health.online ? "Backend online" : "Backend offline"}
-          </div>
-        </header>
-
-        <main className="content-stack">
-          <HeroSection
+        {!showLogin && (
+          <AppNavbar
             health={health}
-            latestPrediction={dashboard?.latestPrediction || latestPrediction}
-            onPrimaryClick={scrollToAssessment}
+            showApp={showApp}
+            onStart={scrollToAssessment}
+            currentUser={currentUser}
+            onLogout={handleLogout}
           />
+        )}
 
-          <SleepForm
-            fields={formMeta.fields}
-            values={formValues}
-            errors={formErrors}
-            isSubmitting={isSubmitting}
-            submitError={submitError}
-            successMessage={successMessage}
-            onChange={handleFieldChange}
-            onSubmit={handleSubmit}
-          />
+        <main className={showApp ? "content-stack" : "landing-only"}>
+          {!showApp ? (
+  showLogin ? (
+    <LoginPage
+      onBack={() => setShowLogin(false)}
+      onLoginSuccess={(user) => {
+        setCurrentUser(user);
+        setShowLogin(false);
+        setShowApp(true);
 
-          <PredictionResult result={latestPrediction} />
+        setTimeout(() => {
+          document.getElementById("assessment")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      }}
+    />
+  ) : (
+    <LandingPage health={health} onStart={scrollToAssessment} />
+  )
+) : (
+            <>
+              <HeroSection
+                health={health}
+                latestPrediction={
+                  dashboard?.latestPrediction || latestPrediction
+                }
+                onPrimaryClick={scrollToAssessment}
+              />
 
-          <DashboardSummary
-            summary={dashboard}
-            isLoading={dashboardLoading}
-            error={dashboardError}
-          />
+              <SleepForm
+                fields={formMeta.fields}
+                values={formValues}
+                errors={formErrors}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+                successMessage={successMessage}
+                onChange={handleFieldChange}
+                onSubmit={handleSubmit}
+              />
 
-          <HistoryPanel
-            entries={historyEntries}
-            meta={historyMeta}
-            filter={historyFilter}
-            isLoading={historyLoading}
-            isPending={historyPending}
-            error={historyError}
-            onFilterChange={handleFilterChange}
-            onRefresh={() => loadHistory(historyFilter)}
-          />
+              <PredictionResult result={latestPrediction} />
+
+              <DashboardSummary
+                summary={dashboard}
+                isLoading={dashboardLoading}
+                error={dashboardError}
+              />
+
+              <HistoryPanel
+                entries={historyEntries}
+                meta={historyMeta}
+                filter={historyFilter}
+                isLoading={historyLoading}
+                isPending={historyPending}
+                error={historyError}
+                onFilterChange={handleFilterChange}
+                onRefresh={() => loadHistory(historyFilter)}
+              />
+            </>
+          )}
         </main>
       </div>
     </div>

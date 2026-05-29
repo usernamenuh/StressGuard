@@ -15,20 +15,26 @@ function FieldNote({ field }) {
     );
   }
 
+  if (field.type === "select") {
+    return (
+      <span className="field-note">
+        Pilih salah satu opsi
+      </span>
+    );
+  }
+
   return null;
 }
 
 function getFieldAccent(fieldName) {
   const accentMap = {
     sleepDate: "pink",
-    sleepDurationHours: "blue",
-    sleepQuality: "yellow",
-    bedtimeConsistency: "green",
-    awakeningsCount: "pink",
-    daytimeFatigue: "blue",
-    screenTimeBeforeBedMinutes: "yellow",
-    caffeineIntakeCups: "green",
-    sleepLatencyMinutes: "pink",
+    age: "blue",
+    gender: "green",
+    sleepHours: "blue",
+    sleepQualityScore: "yellow",
+    dailyScreenTimeHours: "pink",
+    phoneUsageBeforeSleepMinutes: "yellow",
     notes: "blue"
   };
 
@@ -96,6 +102,7 @@ export function SleepForm({
                     {field.label || field.name}
                     {field.required ? " *" : ""}
                   </span>
+
                   {field.type === "range" ? (
                     <strong className="range-value">{value}</strong>
                   ) : null}
@@ -112,6 +119,24 @@ export function SleepForm({
                       onChange(field.name, event.target.value, field.type)
                     }
                   />
+                ) : field.type === "select" ? (
+                  <select
+                    name={field.name}
+                    value={value}
+                    onChange={(event) =>
+                      onChange(field.name, event.target.value, field.type)
+                    }
+                  >
+                    {field.options?.map((option) => (
+                      <option key={option} value={option}>
+                        {option === "male"
+                          ? "Laki-laki"
+                          : option === "female"
+                          ? "Perempuan"
+                          : "Lainnya"}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
                   <input
                     name={field.name}
@@ -128,6 +153,7 @@ export function SleepForm({
 
                 <div className="field-footer">
                   <FieldNote field={field} />
+
                   {field.type === "textarea" ? (
                     <span className="field-note">
                       {(value || "").length}/{field.maxLength || 500}
@@ -144,6 +170,7 @@ export function SleepForm({
         <div className="form-actions">
           <div className="status-stack">
             {submitError ? <p className="status-message error">{submitError}</p> : null}
+
             {successMessage ? (
               <p className="status-message success">{successMessage}</p>
             ) : null}

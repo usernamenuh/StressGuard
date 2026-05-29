@@ -1,8 +1,28 @@
 export const fallbackFormMeta = {
   fields: [
-    { name: "sleepDate", label: "Tanggal Tidur", type: "date", required: true },
     {
-      name: "sleepDurationHours",
+      name: "sleepDate",
+      label: "Tanggal Tidur",
+      type: "date",
+      required: true
+    },
+    {
+      name: "age",
+      label: "Usia",
+      type: "number",
+      required: true,
+      min: 1,
+      max: 120
+    },
+    {
+      name: "gender",
+      label: "Gender",
+      type: "select",
+      required: true,
+      options: ["male", "female", "other"]
+    },
+    {
+      name: "sleepHours",
       label: "Durasi Tidur (jam)",
       type: "number",
       required: true,
@@ -11,7 +31,7 @@ export const fallbackFormMeta = {
       step: 0.5
     },
     {
-      name: "sleepQuality",
+      name: "sleepQualityScore",
       label: "Kualitas Tidur",
       type: "range",
       required: true,
@@ -19,52 +39,21 @@ export const fallbackFormMeta = {
       max: 10
     },
     {
-      name: "bedtimeConsistency",
-      label: "Konsistensi Jam Tidur",
-      type: "range",
-      required: true,
-      min: 1,
-      max: 10
-    },
-    {
-      name: "awakeningsCount",
-      label: "Frekuensi Terbangun",
+      name: "dailyScreenTimeHours",
+      label: "Screen Time Harian (jam)",
       type: "number",
       required: true,
       min: 0,
-      max: 10
+      max: 24,
+      step: 0.5
     },
     {
-      name: "daytimeFatigue",
-      label: "Kelelahan Siang Hari",
-      type: "range",
-      required: true,
-      min: 1,
-      max: 10
-    },
-    {
-      name: "screenTimeBeforeBedMinutes",
-      label: "Screen Time Sebelum Tidur (menit)",
+      name: "phoneUsageBeforeSleepMinutes",
+      label: "Penggunaan HP Sebelum Tidur (menit)",
       type: "number",
       required: true,
       min: 0,
       max: 300
-    },
-    {
-      name: "caffeineIntakeCups",
-      label: "Konsumsi Kafein (cangkir)",
-      type: "number",
-      required: true,
-      min: 0,
-      max: 10
-    },
-    {
-      name: "sleepLatencyMinutes",
-      label: "Waktu Mulai Tidur (menit)",
-      type: "number",
-      required: true,
-      min: 0,
-      max: 180
     },
     {
       name: "notes",
@@ -78,14 +67,12 @@ export const fallbackFormMeta = {
 };
 
 const fieldDefaults = {
-  sleepDurationHours: 7.5,
-  sleepQuality: 7,
-  bedtimeConsistency: 7,
-  awakeningsCount: 1,
-  daytimeFatigue: 4,
-  screenTimeBeforeBedMinutes: 45,
-  caffeineIntakeCups: 1,
-  sleepLatencyMinutes: 20,
+  age: 22,
+  gender: "male",
+  sleepHours: 7,
+  sleepQualityScore: 7,
+  dailyScreenTimeHours: 6,
+  phoneUsageBeforeSleepMinutes: 60,
   notes: ""
 };
 
@@ -100,6 +87,14 @@ export function createInitialFormValues(fields = fallbackFormMeta.fields) {
 
     if (field.type === "textarea") {
       values[field.name] = "";
+      continue;
+    }
+
+    if (field.type === "select") {
+      values[field.name] =
+        fieldDefaults[field.name] ||
+        field.options?.[0] ||
+        "";
       continue;
     }
 
@@ -134,13 +129,28 @@ export function validateForm(values, fields = fallbackFormMeta.fields) {
   for (const field of fields) {
     const value = values[field.name];
 
-    if (field.required && (value === "" || value === null || value === undefined)) {
+    if (
+      field.required &&
+      (value === "" || value === null || value === undefined)
+    ) {
       errors[field.name] = "Field ini wajib diisi.";
       continue;
     }
 
-    if (field.type === "date" && value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    if (
+      field.type === "date" &&
+      value &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(value)
+    ) {
       errors[field.name] = "Gunakan format tanggal YYYY-MM-DD.";
+      continue;
+    }
+
+    if (field.type === "select") {
+      if (field.options?.length && !field.options.includes(value)) {
+        errors[field.name] = "Pilih opsi yang valid.";
+      }
+
       continue;
     }
 
@@ -159,7 +169,12 @@ export function validateForm(values, fields = fallbackFormMeta.fields) {
       }
     }
 
-    if (field.type === "textarea" && value && field.maxLength && value.length > field.maxLength) {
+    if (
+      field.type === "textarea" &&
+      value &&
+      field.maxLength &&
+      value.length > field.maxLength
+    ) {
       errors[field.name] = `Maksimal ${field.maxLength} karakter.`;
     }
   }

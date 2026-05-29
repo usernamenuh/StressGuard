@@ -42,10 +42,16 @@ export function HeroSection({ health, latestPrediction, onPrimaryClick }) {
           <span>Latest insight</span>
           <strong>
             {latestPrediction
-              ? `${latestPrediction.stressLevel} ${latestPrediction.stressScore}`
+              ? `${latestPrediction.stressLevel} • ${latestPrediction.stressScore}%`
               : "No data yet"}
           </strong>
-          {latestPrediction ? <small>{formatDate(latestPrediction.sleepDate)}</small> : null}
+          {latestPrediction ? (
+            <>
+              <small>{formatDate(latestPrediction.sleepDate)}</small>
+
+              <small>Tidur {latestPrediction.sleepHours} jam</small>
+            </>
+          ) : null}
         </div>
       </div>
 

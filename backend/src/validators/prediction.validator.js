@@ -6,14 +6,19 @@ const dateStringSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
 
 const predictionInputSchema = z.object({
   sleepDate: dateStringSchema,
-  sleepDurationHours: z.number().min(0).max(24),
-  sleepQuality: z.number().int().min(1).max(10),
-  bedtimeConsistency: z.number().int().min(1).max(10),
-  awakeningsCount: z.number().int().min(0).max(10),
-  daytimeFatigue: z.number().int().min(1).max(10),
-  screenTimeBeforeBedMinutes: z.number().int().min(0).max(300),
-  caffeineIntakeCups: z.number().int().min(0).max(10),
-  sleepLatencyMinutes: z.number().int().min(0).max(180),
+
+  age: z.number().min(1).max(120),
+
+  gender: z.enum(["male", "female", "other"]),
+
+  sleepHours: z.number().min(0).max(24),
+
+  sleepQualityScore: z.number().min(1).max(10),
+
+  dailyScreenTimeHours: z.number().min(0).max(24),
+
+  phoneUsageBeforeSleepMinutes: z.number().min(0).max(300),
+
   notes: z.string().trim().max(500).optional()
 });
 

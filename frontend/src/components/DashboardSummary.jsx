@@ -3,7 +3,7 @@ import {
   formatDate,
   formatDateTime,
   getDistributionRows,
-  getStressTone
+  getStressTone,
 } from "../lib/formatters";
 
 function DashboardEmpty() {
@@ -27,7 +27,11 @@ export function DashboardSummary({ summary, isLoading, error }) {
   const calendarDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <section className="phone-card dashboard-phone" id="dashboard" aria-labelledby="dashboard-title">
+    <section
+      className="phone-card dashboard-phone"
+      id="dashboard"
+      aria-labelledby="dashboard-title"
+    >
       <div className="calendar-strip" aria-hidden="true">
         {calendarDays.map((day, index) => (
           <div
@@ -66,12 +70,12 @@ export function DashboardSummary({ summary, isLoading, error }) {
               <span>Average score</span>
               <strong>{summary.averageStressScore}</strong>
             </div>
-            <div className={`feature-card feature-card-yellow tone-${latestTone}`}>
+            <div
+              className={`feature-card feature-card-yellow tone-${latestTone}`}
+            >
               <span>Latest tone</span>
               <strong>{summary.latestPrediction?.stressLevel || "-"}</strong>
-              <small>
-                {formatDate(summary.latestPrediction?.sleepDate)}
-              </small>
+              <small>{formatDate(summary.latestPrediction?.sleepDate)}</small>
             </div>
           </div>
 
@@ -173,7 +177,13 @@ export function DashboardSummary({ summary, isLoading, error }) {
                     <strong>{item.stressLevel}</strong>
                     <span>Skor {item.stressScore}</span>
                   </div>
-                  <p>{formatDate(item.sleepDate)}</p>
+                  <p>
+                    Tidur {item.sleepHours} jam · Kualitas{" "}
+                    {item.sleepQualityScore}/10
+                  </p>
+
+                  <p>Screen time {item.dailyScreenTimeHours} jam</p>
+
                   <small>{formatDateTime(item.createdAt)}</small>
                 </article>
               ))}

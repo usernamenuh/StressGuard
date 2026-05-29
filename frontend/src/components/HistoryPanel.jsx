@@ -1,4 +1,8 @@
-import { formatConfidence, formatDateTime, getStressTone } from "../lib/formatters";
+import {
+  formatConfidence,
+  formatDateTime,
+  getStressTone,
+} from "../lib/formatters";
 import { AvatarBadge } from "./Illustrations";
 
 export function HistoryPanel({
@@ -9,7 +13,7 @@ export function HistoryPanel({
   isPending,
   error,
   onFilterChange,
-  onRefresh
+  onRefresh,
 }) {
   const latestEntry = entries[0];
   const headlineNote =
@@ -17,10 +21,19 @@ export function HistoryPanel({
     "Sometimes it feels like no matter what we do, the body still asks us to slow down first.";
 
   return (
-    <section className="phone-card journal-phone" id="history" aria-labelledby="history-title">
+    <section
+      className="phone-card journal-phone"
+      id="history"
+      aria-labelledby="history-title"
+    >
       <div className="journal-topbar">
         <AvatarBadge />
-        <button type="button" className="icon-button" onClick={onRefresh} aria-label="Muat ulang data">
+        <button
+          type="button"
+          className="icon-button"
+          onClick={onRefresh}
+          aria-label="Muat ulang data"
+        >
           ↻
         </button>
       </div>
@@ -41,7 +54,10 @@ export function HistoryPanel({
       <div className="history-toolbar">
         <label className="toolbar-field">
           <span>Stress level</span>
-          <select value={filter} onChange={(event) => onFilterChange(event.target.value)}>
+          <select
+            value={filter}
+            onChange={(event) => onFilterChange(event.target.value)}
+          >
             <option value="">Semua level</option>
             <option value="Rendah">Rendah</option>
             <option value="Sedang">Sedang</option>
@@ -78,7 +94,21 @@ export function HistoryPanel({
                   <strong>{entry.stressLevel}</strong>
                   <span>Skor {entry.stressScore}</span>
                 </div>
-                <p>{entry.notes || "Tidak ada catatan tambahan pada entri ini."}</p>
+
+                <p>
+                  Tidur {entry.sleepHours} jam · Kualitas{" "}
+                  {entry.sleepQualityScore}/10
+                </p>
+
+                <p>
+                  Screen time {entry.dailyScreenTimeHours} jam · HP sebelum
+                  tidur {entry.phoneUsageBeforeSleepMinutes} menit
+                </p>
+
+                <p>
+                  {entry.notes || "Tidak ada catatan tambahan pada entri ini."}
+                </p>
+
                 <div className="journal-meta">
                   <small>{formatDateTime(entry.createdAt)}</small>
                   <small>Confidence {formatConfidence(entry.confidence)}</small>
