@@ -108,7 +108,7 @@ export function SleepForm({
                     name={field.name}
                     rows="4"
                     maxLength={field.maxLength}
-                    placeholder="Tambahkan catatan singkat bila perlu"
+                    placeholder={field.placeholder || "Tambahkan catatan singkat bila perlu"}
                     value={value}
                     onChange={(event) =>
                       onChange(field.name, event.target.value, field.type)
@@ -122,6 +122,7 @@ export function SleepForm({
                       onChange(field.name, event.target.value, field.type)
                     }
                   >
+                    <option value="" disabled>{field.placeholder || "Pilih salah satu"}</option>
                     {field.options?.map((option) => (
                       <option key={option} value={option}>
                         {option === "male"
@@ -139,6 +140,7 @@ export function SleepForm({
                     min={field.min}
                     max={field.max}
                     step={field.step || (field.type === "range" ? 1 : "any")}
+                    placeholder={field.placeholder}
                     value={value}
                     onChange={(event) =>
                       onChange(field.name, event.target.value, field.type)

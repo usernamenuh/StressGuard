@@ -4,7 +4,8 @@ export const fallbackFormMeta = {
       name: "sleepDate",
       label: "Tanggal Tidur",
       type: "date",
-      required: true
+      required: true,
+      placeholder: "Pilih tanggal"
     },
     {
       name: "age",
@@ -12,14 +13,16 @@ export const fallbackFormMeta = {
       type: "number",
       required: true,
       min: 1,
-      max: 120
+      max: 120,
+      placeholder: "Contoh: 22"
     },
     {
       name: "gender",
       label: "Gender",
       type: "select",
       required: true,
-      options: ["male", "female", "other"]
+      options: ["male", "female", "other"],
+      placeholder: "Pilih gender"
     },
     {
       name: "sleepHours",
@@ -28,7 +31,8 @@ export const fallbackFormMeta = {
       required: true,
       min: 0,
       max: 24,
-      step: 0.5
+      step: 0.5,
+      placeholder: "Contoh: 7.5"
     },
     {
       name: "sleepQualityScore",
@@ -36,7 +40,8 @@ export const fallbackFormMeta = {
       type: "range",
       required: true,
       min: 1,
-      max: 10
+      max: 10,
+      placeholder: "Skala 1-10"
     },
     {
       name: "dailyScreenTimeHours",
@@ -45,7 +50,8 @@ export const fallbackFormMeta = {
       required: true,
       min: 0,
       max: 24,
-      step: 0.5
+      step: 0.5,
+      placeholder: "Contoh: 6"
     },
     {
       name: "phoneUsageBeforeSleepMinutes",
@@ -53,26 +59,28 @@ export const fallbackFormMeta = {
       type: "number",
       required: true,
       min: 0,
-      max: 300
+      max: 300,
+      placeholder: "Contoh: 60"
     },
     {
       name: "notes",
       label: "Catatan",
       type: "textarea",
       required: false,
-      maxLength: 500
+      maxLength: 500,
+      placeholder: "Tambahkan catatan singkat (opsional)"
     }
   ],
   stressLevels: ["Rendah", "Sedang", "Tinggi"]
 };
 
 const fieldDefaults = {
-  age: 22,
+  age: "",
   gender: "male",
-  sleepHours: 7,
-  sleepQualityScore: 7,
-  dailyScreenTimeHours: 6,
-  phoneUsageBeforeSleepMinutes: 60,
+  sleepHours: "",
+  sleepQualityScore: 1,
+  dailyScreenTimeHours: "",
+  phoneUsageBeforeSleepMinutes: "",
   notes: ""
 };
 
