@@ -52,7 +52,7 @@ def predict(data: StressInput):
 
     return {
         "status": "success",
-        "input": data.dict(),
+        "input": data.model_dump(),
         "prediction": prediction,
         "recommendation": recommendation
     }

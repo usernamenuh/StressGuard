@@ -10,8 +10,12 @@ describe("form helpers", () => {
     const values = createInitialFormValues(fallbackFormMeta.fields);
 
     expect(values.sleepDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(values.sleepDurationHours).toBe(7.5);
-    expect(values.sleepQuality).toBe(7);
+    expect(values.age).toBe("");
+    expect(values.gender).toBe("male");
+    expect(values.sleepHours).toBe("");
+    expect(values.sleepQualityScore).toBe(1);
+    expect(values.dailyScreenTimeHours).toBe("");
+    expect(values.phoneUsageBeforeSleepMinutes).toBe("");
     expect(values.notes).toBe("");
   });
 
@@ -19,43 +23,46 @@ describe("form helpers", () => {
     const errors = validateForm(
       {
         sleepDate: "14-05-2026",
-        sleepDurationHours: -1,
-        sleepQuality: 0,
-        bedtimeConsistency: 5,
-        awakeningsCount: 0,
-        daytimeFatigue: 4,
-        screenTimeBeforeBedMinutes: 30,
-        caffeineIntakeCups: 1,
-        sleepLatencyMinutes: 20,
+        age: 0,
+        gender: "unknown",
+        sleepHours: -1,
+        sleepQualityScore: 0,
+        dailyScreenTimeHours: 25,
+        phoneUsageBeforeSleepMinutes: 301,
         notes: ""
       },
       fallbackFormMeta.fields
     );
 
     expect(errors.sleepDate).toBeDefined();
-    expect(errors.sleepDurationHours).toBeDefined();
-    expect(errors.sleepQuality).toBeDefined();
+    expect(errors.age).toBeDefined();
+    expect(errors.gender).toBeDefined();
+    expect(errors.sleepHours).toBeDefined();
+    expect(errors.sleepQualityScore).toBeDefined();
+    expect(errors.dailyScreenTimeHours).toBeDefined();
+    expect(errors.phoneUsageBeforeSleepMinutes).toBeDefined();
   });
 
   test("normalizes payload values before sending to backend", () => {
     const payload = normalizePayload(
       {
         sleepDate: "2026-05-14",
-        sleepDurationHours: "6.5",
-        sleepQuality: "4",
-        bedtimeConsistency: "3",
-        awakeningsCount: "2",
-        daytimeFatigue: "8",
-        screenTimeBeforeBedMinutes: "120",
-        caffeineIntakeCups: "3",
-        sleepLatencyMinutes: "45",
+        age: "22",
+        gender: "male",
+        sleepHours: "6.5",
+        sleepQualityScore: "4",
+        dailyScreenTimeHours: "8",
+        phoneUsageBeforeSleepMinutes: "120",
         notes: "  Sulit tidur  "
       },
       fallbackFormMeta.fields
     );
 
-    expect(payload.sleepDurationHours).toBe(6.5);
-    expect(payload.sleepQuality).toBe(4);
+    expect(payload.age).toBe(22);
+    expect(payload.sleepHours).toBe(6.5);
+    expect(payload.sleepQualityScore).toBe(4);
+    expect(payload.dailyScreenTimeHours).toBe(8);
+    expect(payload.phoneUsageBeforeSleepMinutes).toBe(120);
     expect(payload.notes).toBe("Sulit tidur");
   });
 });
