@@ -1,0 +1,5 @@
+priority_segment,users,avg_stress_level,high_stress_rate,avg_screen_time,avg_sleep_quality
+high_screen_low_sleep_quality,2889,9.94,100.0,8.72,3.92
+high_screen_time,2078,9.23,96.92,8.24,5.9
+low_sleep_quality,845,9.12,95.62,5.74,4.4
+general_users,9188,5.34,25.89,3.85,7.23

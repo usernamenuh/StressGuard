@@ -1,0 +1,24 @@
+column,dtype,missing_count,unique_count,description
+age,int64,0,42,Usia pengguna.
+gender,object,0,3,Jenis kelamin pengguna.
+occupation,object,0,8,Pekerjaan pengguna.
+daily_screen_time_hours,float64,0,901,Total durasi screen time harian dalam jam.
+phone_usage_before_sleep_minutes,int64,0,120,Durasi penggunaan ponsel sebelum tidur dalam menit.
+sleep_hours,float64,0,501,Durasi tidur dalam jam.
+sleep_quality_score,float64,0,831,Skor kualitas tidur pengguna.
+stress_level,float64,0,900,Skor tingkat stres numerik 1-10.
+caffeine_intake_cups,int64,0,5,Jumlah konsumsi kafein per hari dalam cangkir.
+physical_activity_minutes,int64,0,120,Durasi aktivitas fisik harian dalam menit.
+notifications_received_per_day,int64,0,280,Jumlah notifikasi yang diterima per hari.
+mental_fatigue_score,float64,0,901,Skor kelelahan mental.
+stress_category,object,0,3,"Kategori target stres: low, medium, high."
+sleep_duration_category,object,0,3,"Kategori durasi tidur: short, ideal, long."
+sleep_quality_category,object,0,3,"Kategori kualitas tidur: low, medium, high."
+phone_usage_before_sleep_category,object,0,3,Kategori penggunaan HP sebelum tidur.
+daily_screen_time_category,object,0,3,Kategori screen time harian.
+sleep_deficit_hours,float64,0,301,"Selisih kekurangan tidur dari 7 jam, minimum 0."
+poor_quality_and_short_sleep,int64,0,2,Flag 1 jika kualitas tidur rendah dan tidur kurang dari 6 jam.
+high_phone_usage_low_sleep,int64,0,2,Flag 1 jika penggunaan HP sebelum tidur tinggi dan tidur kurang dari 6 jam.
+high_screen_high_fatigue,int64,0,2,Flag 1 jika screen time tinggi dan mental fatigue tinggi.
+notification_intensity_per_hour,float64,0,280,Rata-rata notifikasi per jam.
+priority_segment,object,0,4,Kolom turunan atau fitur tambahan untuk analisis/modeling.

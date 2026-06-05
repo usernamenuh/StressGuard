@@ -1,0 +1,4 @@
+stress_category,count,percentage,label
+high,8090,53.9,High
+medium,4190,27.9,Medium
+low,2720,18.1,Low
