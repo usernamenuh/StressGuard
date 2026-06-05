@@ -148,13 +148,7 @@ Isi folder:
 
 ```text
 data_science/
-├── Dataset 1 - Global_Lifespan_Determinants.csv
-├── Dataset 2 - mental_health_dataset.csv
-├── Dataset 3 - sleep_mobile_stress_dataset_15000.csv
-├── Dataset 4 - Sleep_Data_Sampled.csv
-├── Dataset 5 - mental_health.csv
-├── Dataset 6 - stress_detection_data.csv
-└── Dataset 7 - Sleep_health_and_lifestyle_dataset.csv
+└── Dataset 3 - sleep_mobile_stress_dataset_15000.csv
 ```
 
 Peran folder `data_science/`:
