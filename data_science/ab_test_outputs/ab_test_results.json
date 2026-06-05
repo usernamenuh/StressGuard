@@ -1,0 +1,20 @@
+{
+    "n_kontrol": 500,
+    "n_treatment": 500,
+    "mean_post_a": 7.0255,
+    "mean_post_b": 5.8381,
+    "median_post_a": 7.0491,
+    "median_post_b": 5.8936,
+    "delta_mean": 1.1873,
+    "mann_whitney_stat": 169526.0,
+    "mann_whitney_p": 0.0,
+    "cohens_d": 0.6523,
+    "effect_size_label": "sedang",
+    "bootstrap_ci_95_lo": 0.9659,
+    "bootstrap_ci_95_hi": 1.414,
+    "chi2_stat": 91.6179,
+    "chi2_p": 0.0,
+    "chi2_dof": 1,
+    "improved_rate_a": 13.8,
+    "improved_rate_b": 41.0
+}
